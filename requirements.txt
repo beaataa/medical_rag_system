@@ -1,5 +1,10 @@
-flask==2.3.3
-llama-index==0.9.4  
-langchain==0.0.267 
-openai==0.28.1     
-nltk==3.8.1
+flask
+langchain
+langchain-community
+llama-index-core
+llama-index-llms-openai
+llama-index-embeddings-openai
+openai
+requests
+python-dotenv
+nltk
