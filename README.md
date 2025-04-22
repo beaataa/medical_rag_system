@@ -11,7 +11,7 @@ Users can ask any medical question and receive up-to-date, referenced informatio
 - API endpoints: For advanced queries and updating the knowledge base.
 
 ## Demo
-![App Screenshot](screenshots/screenshot.png)
+<img src="screenshots/screenshot.png" width="600" alt="Screenshot">
 
 1. Clone the repository
 ```bash
