@@ -3,12 +3,23 @@
 A Flask-based web application that uses Retrieval-Augmented Generation (RAG) with OpenAI and PubMed data to answer medical questions.
 Users can ask any medical question and receive up-to-date, referenced information from PubMed articles, powered by large language models.
 
-## Features
-- Ask medical questions and get answers based on real PubMed articles.
-- Retrieval-Augmented Generation (RAG): Combines document retrieval with OpenAI LLMs for accurate, referenced responses.
-- Fresh PubMed data: Fetches and parses the latest articles for each query.
-- Web interface: Simple, responsive frontend for user interaction.
-- API endpoints: For advanced queries and updating the knowledge base.
+## How it Works
+User Query:
+A user submits a medical question through the web interface.
+
+Document Retrieval (RAG):
+The system searches PubMed—a leading medical literature database—for the most relevant and recent articles related to the question. It fetches and parses these articles, extracting titles, abstracts, authors, and publication details.
+
+Knowledge Indexing:
+Retrieved PubMed articles are converted into vector embeddings using OpenAI’s embedding models and indexed using LlamaIndex for fast semantic search.
+
+Contextual Generation with LangChain:
+- It combines the retrieved PubMed information with the user’s question.
+- It feeds this context into an OpenAI language model (LLM) via a prompt template.
+- The LLM generates a clear, referenced answer, citing the PubMed articles used.
+
+Response Display:
+The user receives an answer, along with clickable PubMed source links for transparency and further reading.
 
 ## Demo
 <img src="screenshots/screenshot.png" width="600" alt="Screenshot">
@@ -47,3 +58,10 @@ The app will be available at http://localhost:5000.
 - GET /api/medical-data/pubmed/search?q=... — Search PubMed for articles.
 - GET /api/medical-data/pubmed/article/<article_id> — Get full details for an article.
 - POST /api/medical-data/update-index — Update the RAG index with new PubMed data.
+
+## Technical Stack
+- Backend: Python, Flask
+- AI/GenAI: OpenAI GPT models, LlamaIndex, LangChain
+- Retrieval: PubMed E-utilities API (NCBI)
+- Frontend: HTML, CSS, JavaScript
+- Deployment: Easily run locally or on any cloud platform
