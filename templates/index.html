@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medical Information Assistant</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .container {
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .search-container {
+            margin-bottom: 20px;
+        }
+        .search-container input {
+            width: 70%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        .search-container button {
+            padding: 10px 15px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .response-container {
+            display: none;
+            background-color: #f9f9f9;
+            padding: 15px;
+            border-radius: 5px;
+        }
+        #loading {
+            display: none;
+            text-align: center;
+            margin: 20px 0;
+        }
+        .sources {
+            margin-top: 15px;
+            font-size: 14px;
+        }
+        .sources a {
+            color: #0066cc;
+        }
+    </style>
+</head>
+<body>
+    <h1>Medical Information Assistant</h1>
+    
+    <div class="container">
+        <p>Ask any medical question and get information from PubMed:</p>
+        
+        <div class="search-container">
+            <input type="text" id="question-input" placeholder="Enter your medical question...">
+            <button onclick="askQuestion()">Search</button>
+        </div>
+        
+        <div id="loading">
+            <p>Searching medical databases...</p>
+        </div>
+        
+        <div id="response-container" class="response-container">
+            <div id="response-text"></div>
+            <div id="sources" class="sources"></div>
+        </div>
+    </div>
+    
+    <script>
+        function askQuestion() {
+            const question = document.getElementById('question-input').value.trim();
+            
+            if (!question) {
+                alert('Please enter a question');
+                return;
+            }
+            
+            // Show loading
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('response-container').style.display = 'none';
+            
+            // Make API request
+            fetch('/ask', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ question: question }),
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                // Hide loading
+                document.getElementById('loading').style.display = 'none';
+                
+                // Display response
+                document.getElementById('response-text').innerHTML = data.response.replace(/\n/g, '<br>');
+                
+                // Display sources if available
+                const sourcesDiv = document.getElementById('sources');
+                if (data.sources && data.sources.length > 0) {
+                    let sourcesHtml = '<p><strong>Sources:</strong></p><ul>';
+                    data.sources.forEach(pmid => {
+                        sourcesHtml += `<li><a href="https://pubmed.ncbi.nlm.nih.gov/${pmid}/" target="_blank">PubMed ID: ${pmid}</a></li>`;
+                    });
+                    sourcesHtml += '</ul>';
+                    sourcesDiv.innerHTML = sourcesHtml;
+                } else {
+                    sourcesDiv.innerHTML = '';
+                }
+                
+                document.getElementById('response-container').style.display = 'block';
+            })
+            .catch(error => {
+                // Hide loading
+                document.getElementById('loading').style.display = 'none';
+                
+                // Display error
+                document.getElementById('response-text').innerHTML = 'Error: Could not retrieve information. Please try again.';
+                document.getElementById('response-container').style.display = 'block';
+                console.error('Error:', error);
+            });
+        }
+        
+        // Allow Enter key to submit
+        document.getElementById('question-input').addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                askQuestion();
+            }
+        });
+    </script>
+</body>
+</html>
