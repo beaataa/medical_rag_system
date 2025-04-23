@@ -22,7 +22,7 @@ Response Display:
 The user receives an answer, along with clickable PubMed source links for transparency and further reading.
 
 ## Demo
-<img src="screenshots/screenshot.png" width="600" alt="Screenshot">
+<img src="screenshots/screenshot_react.png" width="600" alt="Screenshot">
 
 1. Clone the repository
 ```bash
