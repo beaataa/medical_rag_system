@@ -63,5 +63,5 @@ The app will be available at http://localhost:5000.
 - Backend: Python, Flask
 - AI/GenAI: OpenAI GPT models, LlamaIndex, LangChain
 - Retrieval: PubMed E-utilities API (NCBI)
-- Frontend: HTML, CSS, JavaScript
+- Frontend: React (built and served as static files via Flask)
 - Deployment: Easily run locally or on any cloud platform

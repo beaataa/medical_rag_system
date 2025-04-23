@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify, render_template
+from flask import Flask, request, jsonify, render_template, send_from_directory
 # Updated import paths for LangChain
 from langchain_community.llms import OpenAI
 from langchain.chains import LLMChain
@@ -19,7 +19,7 @@ import openai
 openai.api_key = OPENAI_API_KEY
 os.environ["OPENAI_API_KEY"] = OPENAI_API_KEY  # Set environment variable too
 
-app = Flask(__name__, static_folder='static', template_folder='templates')
+app = Flask(__name__, static_folder='frontend/medical-assistant/build/static', template_folder='frontend/medical-assistant/build')
 
 # Function to fetch and parse PubMed data
 def fetch_pubmed_data(search_term, max_results=10):
@@ -408,7 +408,7 @@ def update_index():
 def home():
     return render_template('index.html')
 
-@app.route("/ask", methods=["POST"])
+@app.route("/api/ask", methods=["POST"])
 def ask():
     try:
         question = request.json["question"]
@@ -438,6 +438,15 @@ def ask():
         })
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+    
+# Serve React App - this will catch all routes not defined above
+@app.route('/', defaults={'path': ''})
+@app.route('/<path:path>')
+def serve(path):
+    if path != "" and os.path.exists(os.path.join(app.static_folder, path)):
+        return send_from_directory(app.static_folder, path)
+    return send_from_directory(app.template_folder, 'index.html')
+
 
 # Initialize system at startup
 print("Initializing RAG system with PubMed data...")
